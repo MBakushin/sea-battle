@@ -48,62 +48,66 @@ class Ship:
 
 
 class Board:
-    class Board:
-        HOR_VIEW = {0: 'A', 1: 'B', 2: 'C', 3: 'D', 4: 'E', 5: 'F'}  # fill it
-        VER_VIEW = {0: '1', 1: '2', 2: '3', 3: '4', 4: '5', 5: '6'}  # fill it
-        shipMark = 'I'
-        shootMark = 'X'
-        missMark = 'O'
-        _shipList = []
-        _contourList = []
-        _shipAlive = len(_shipList)
+    HOR_VIEW = {0: 'A', 1: 'B', 2: 'C', 3: 'D', 4: 'E', 5: 'F'}  # fill it
+    VER_VIEW = {0: '1', 1: '2', 2: '3', 3: '4', 4: '5', 5: '6'}  # fill it
+    shipMark = 'I'
+    shootMark = 'X'
+    missMark = 'O'
+    _shipList = []
+    _contourList = set()
+    _shipAlive = 0
 
-        def __init__(self, hid=False, size=6):
-            self._hid = hid
-            self._field = [[' ' for i in range(size)] for i in range(size)]
+    def __init__(self, hid=False, size=6):
+        self._hid = hid
+        self._field = [[' ' for i in range(size)] for i in range(size)]
 
-        @property
-        def field(self):
-            return self._field
+    @property
+    def field(self):
+        return self._field
 
-        @field.setter
-        def field(self, index, value):
-            self._field[index] = value
+    @field.setter
+    def field(self, index, value):
+        self._field[index] = value
 
-        def __len__(self):
-            return len(self._field)
+    def __len__(self):
+        return len(self._field)
 
-        def add_ship(self):
-            ...
+    def add_ship(self, Ship):
+        self._shipList.append(Ship.dots())
+        for i in range(len(Ship.dots())):
+            self.field[Ship.dots()[i][0]][Ship.dots()[i][1]] = self.shipMark
+        self.contour()
+        self._shipAlive += 1
 
-        def contour(self):
-            self._tmp_field = np.pad(self.field, 1, mode='constant')
-            for i in range(1, len(self._tmp_field) - 1):
-                for j in range(1, len(self._tmp_field) - 1):
-                    for v in range(3):
-                        if 'I' in self._tmp_field[i - 1 + v][j - 1:j + 2]:
-                            self._contourList.append((i-1, j-1))
+    def contour(self):
+        self._tmp_field = np.pad(self.field, 1, mode='constant')
+        for i in range(1, len(self._tmp_field) - 1):
+            for j in range(1, len(self._tmp_field) - 1):
+                for row in range(3):
+                    if 'I' in self._tmp_field[i - 1 + row][j - 1:j + 2]:
+                        self._contourList.add((i-1, j-1))
+                        break
 
-        def output_field(self):
-            self._tmp_field = copy.copy(self.field)
-            if self._hid == True:
-                for i in range(len(self._tmp_field)):
-                    for j in range(len(self._tmp_field)):
-                        if self._tmp_field[i][j] == 'I':
-                            self._tmp_field[i][j] = ' '
+    def output_field(self):
+        self._tmp_field = copy.copy(self.field)
+        if self._hid == True:
+            for i in range(len(self._tmp_field)):
+                for j in range(len(self._tmp_field)):
+                    if self._tmp_field[i][j] == 'I':
+                        self._tmp_field[i][j] = ' '
 
-            print('    ', end='')
-            for value in self.HOR_VIEW.values():
-                print(value, end=' | ')
-            print()
+        print('    ', end='')
+        for value in self.HOR_VIEW.values():
+            print(value, end=' | ')
+        print()
+        print('- - - - - - - - - - - - - - ')
+        for index, num in enumerate(self._tmp_field):
+            row = ' | '.join(num)
+            print(f'{self.VER_VIEW[index]} | {row} |')
             print('- - - - - - - - - - - - - - ')
-            for index, num in enumerate(self._tmp_field):
-                row = ' | '.join(num)
-                print(f'{self.VER_VIEW[index]} | {row} |')
-                print('- - - - - - - - - - - - - - ')
 
-        def out(self, dot):
-            return dot
+    def out(self, dot):
+        return dot
 
-        def shoot(self):
-            ...
+    def shoot(self):
+        ...
