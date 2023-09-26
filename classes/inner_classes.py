@@ -59,13 +59,45 @@ class Board:
     shipMark = u'\u25a0'  # Unicode code for black square
     shootMark = 'X'
     missMark = 'O'
-    _shipList = []
-    _contourList = set()
-    _shipAlive = 0
+    # _shipList = []
+    # _contourList = set()
+    # _shipAlive = 0
 
-    def __init__(self, hid=False, size=6):
+    def __init__(self, hid=False, size=6, shipList=None, contourList=None,
+                 shipAlive=0):
         self._hid = hid
         self._field = [[' ' for i in range(size)] for i in range(size)]
+        if shipList is None:
+            shipList = []
+        self._shipList = shipList
+        if contourList is None:
+            contourList = set()
+        self._contourList = contourList
+        self._shipAlive = shipAlive
+
+    @property
+    def shipList(self):
+        return self._shipList
+
+    @shipList.setter
+    def shipList(self, value):
+        self._shipList = value
+
+    @property
+    def shipAlive(self):
+        return self._shipAlive
+
+    @shipAlive.setter
+    def shipAlive(self, value):
+        self._shipAlive = value
+
+    @property
+    def contourList(self):
+        return self._contourList
+
+    @contourList.setter
+    def contourList(self, value):
+        self._contourList = value
 
     @property
     def field(self):
@@ -86,11 +118,11 @@ class Board:
 
     def add_ship(self, Ship):
         """Method add ship class obj to Board"""
-        self._shipList.append(Ship.dots())
+        self.shipList.append(Ship.dots())
         for i in range(len(Ship.dots())):
             self.field[Ship.dots()[i][0]][Ship.dots()[i][1]] = self.shipMark
         self.fill_contour()
-        self._shipAlive += 1
+        self.shipAlive += 1
 
     def fill_contour(self):
         """Method complete contour array with coord"""
@@ -99,7 +131,7 @@ class Board:
             for j in range(1, len(self.tmp_field) - 1):
                 for row in range(3):
                     if self.shipMark in self.tmp_field[i - 1 + row][j - 1:j + 2]:
-                        self._contourList.add((i-1, j-1))
+                        self.contourList.add((i-1, j-1))
                         break
 
     def output_field(self):
