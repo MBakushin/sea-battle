@@ -1,8 +1,13 @@
-import copy
-import numpy as np
+from copy import copy
+from numpy import pad
+from classes.exceptions import *
 
 
 class Dot:
+    """Class for define dot in tuple:
+       x - horizontal coord,
+       y - vertical coord
+    """
     def __init__(self, x, y):
         self._x = x
         self._y = y
@@ -13,15 +18,15 @@ class Dot:
         return self._coords
 
     def __eq__(self, other):
-        tmp = other if isinstance(other, tuple) else other.coord
-        return self._coords == tmp
+        tmp = other if isinstance(other, tuple) else other.coords
+        return self.coords == tmp
 
 
 class Ship:
+    """Class for init ship class obj."""
     available_direction = ('hor', 'vert')
-    # start = DescShipCoords()
 
-    def __init__(self, start: tuple, length, direction):
+    def __init__(self, start: tuple, length: int, direction: str = 'hor'):
         self.start = start
         self._lenght = length
         self._direction = direction
@@ -35,7 +40,8 @@ class Ship:
     def start(self, value):
         self._start = value
 
-    def dots(self):
+    def dots(self) -> list[tuple]:
+        """Method return array with dot in tuple"""
         dotsList = [self.start]
         if self._lenght > 1:
             if self._direction == 'hor':
@@ -50,7 +56,7 @@ class Ship:
 class Board:
     HOR_VIEW = {0: 'A', 1: 'B', 2: 'C', 3: 'D', 4: 'E', 5: 'F'}  # fill it
     VER_VIEW = {0: '1', 1: '2', 2: '3', 3: '4', 4: '5', 5: '6'}  # fill it
-    shipMark = 'I'
+    shipMark = u'\u25a0'  # Unicode code for black square
     shootMark = 'X'
     missMark = 'O'
     _shipList = []
@@ -72,42 +78,50 @@ class Board:
     def __len__(self):
         return len(self._field)
 
+    def init_ship(self):
+        self.len_ship = {1: 3, 2: 2, 3: 2, 4: 1, 5: 1, 6: 1, 7: 1}
+        self.n = 1
+        while self.n <= 7:
+            ...
+
     def add_ship(self, Ship):
+        """Method add ship class obj to Board"""
         self._shipList.append(Ship.dots())
         for i in range(len(Ship.dots())):
             self.field[Ship.dots()[i][0]][Ship.dots()[i][1]] = self.shipMark
-        self.contour()
+        self.fill_contour()
         self._shipAlive += 1
 
-    def contour(self):
-        self._tmp_field = np.pad(self.field, 1, mode='constant')
-        for i in range(1, len(self._tmp_field) - 1):
-            for j in range(1, len(self._tmp_field) - 1):
+    def fill_contour(self):
+        """Method complete contour array with coord"""
+        self.tmp_field = pad(self.field, 1, mode='constant')
+        for i in range(1, len(self.tmp_field) - 1):
+            for j in range(1, len(self.tmp_field) - 1):
                 for row in range(3):
-                    if 'I' in self._tmp_field[i - 1 + row][j - 1:j + 2]:
+                    if self.shipMark in self.tmp_field[i - 1 + row][j - 1:j + 2]:
                         self._contourList.add((i-1, j-1))
                         break
 
     def output_field(self):
-        self._tmp_field = copy.copy(self.field)
-        if self._hid == True:
-            for i in range(len(self._tmp_field)):
-                for j in range(len(self._tmp_field)):
-                    if self._tmp_field[i][j] == 'I':
-                        self._tmp_field[i][j] = ' '
+        self.tmp_field = copy(self.field)
+        if self._hid:
+            for i in range(len(self.tmp_field)):
+                for j in range(len(self.tmp_field)):
+                    if self.tmp_field[i][j] == self.shipMark:
+                        self.tmp_field[i][j] = ' '
 
         print('    ', end='')
         for value in self.HOR_VIEW.values():
             print(value, end=' | ')
         print()
         print('- - - - - - - - - - - - - - ')
-        for index, num in enumerate(self._tmp_field):
+        for index, num in enumerate(self.tmp_field):
             row = ' | '.join(num)
             print(f'{self.VER_VIEW[index]} | {row} |')
             print('- - - - - - - - - - - - - - ')
 
     def out(self, dot):
-        return dot
+        ...
 
     def shoot(self):
         ...
