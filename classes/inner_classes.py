@@ -2,7 +2,6 @@ from copy import copy
 from numpy import pad
 from classes.exceptions import *
 
-
 class Dot:
     """Class for define dot in tuple:
        x - horizontal coord,
@@ -26,30 +25,33 @@ class Ship:
     """Class for init ship class obj."""
     available_direction = ('hor', 'vert')
 
-    def __init__(self, start: tuple, length: int, direction: str = 'hor'):
-        self.start = start
+    def __init__(self, startCoords: tuple, length: int, direction: str = 'hor'):
+        self.startCoords = startCoords
         self._lenght = length
         self._direction = direction
         self._hp = length
 
-    @property
-    def start(self):
-        return self._start
+    # def __str__(self):
+    #     return f"{self.__class__}"
 
-    @start.setter
-    def start(self, value):
-        self._start = value
+    @property
+    def startCoords(self):
+        return self._startCoords
+
+    @startCoords.setter
+    def startCoords(self, value):
+        self._startCoords = value
 
     def dots(self) -> list[tuple]:
         """Method return array with dot in tuple"""
-        dotsList = [self.start]
+        dotsList = [self.startCoords]
         if self._lenght > 1:
             if self._direction == 'hor':
                 for i in range(1, self._lenght):
-                    dotsList.append((self.start[0], self.start[1] + i))
+                    dotsList.append((self.startCoords[0], self.startCoords[1] + i))
             elif self._direction == 'vert':
                 for i in range(1, self._lenght):
-                    dotsList.append((self.start[0] + i, self.start[1]))
+                    dotsList.append((self.startCoords[0] + i, self.startCoords[1]))
         return dotsList
 
 
@@ -59,21 +61,18 @@ class Board:
     shipMark = u'\u25a0'  # Unicode code for black square
     shootMark = 'X'
     missMark = 'O'
-    # _shipList = []
-    # _contourList = set()
-    # _shipAlive = 0
 
-    def __init__(self, hid=False, size=6, shipList=None, contourList=None,
-                 shipAlive=0):
-        self._hid = hid
-        self._field = [[' ' for i in range(size)] for i in range(size)]
+    def __init__(self, hid=False, size=6, shipList=None,
+                 contourList=None, shipAlive=0):
+        self.__hid = hid
+        self.field = [[' ' for i in range(size)] for i in range(size)]
         if shipList is None:
             shipList = []
-        self._shipList = shipList
+        self.shipList = shipList
         if contourList is None:
             contourList = set()
-        self._contourList = contourList
-        self._shipAlive = shipAlive
+        self.contourList = contourList
+        self.shipAlive = shipAlive
 
     @property
     def shipList(self):
@@ -104,23 +103,24 @@ class Board:
         return self._field
 
     @field.setter
-    def field(self, index, value):
-        self._field[index] = value
+    def field(self, value):
+        self._field = value
+
+    @field.deleter
+    def field(self):
+        del self._field
 
     def __len__(self):
         return len(self._field)
 
     def init_ship(self):
-        self.len_ship = {1: 3, 2: 2, 3: 2, 4: 1, 5: 1, 6: 1, 7: 1}
-        self.n = 1
-        while self.n <= 7:
-            ...
+        ...
 
-    def add_ship(self, Ship):
+    def add_ship(self, ship: Ship):
         """Method add ship class obj to Board"""
-        self.shipList.append(Ship.dots())
-        for i in range(len(Ship.dots())):
-            self.field[Ship.dots()[i][0]][Ship.dots()[i][1]] = self.shipMark
+        self.shipList.append(ship)
+        for i in range(len(ship.dots())):
+            self.field[ship.dots()[i][0]][ship.dots()[i][1]] = self.shipMark
         self.fill_contour()
         self.shipAlive += 1
 
@@ -136,7 +136,7 @@ class Board:
 
     def output_field(self):
         self.tmp_field = copy(self.field)
-        if self._hid:
+        if self.__hid:
             for i in range(len(self.tmp_field)):
                 for j in range(len(self.tmp_field)):
                     if self.tmp_field[i][j] == self.shipMark:

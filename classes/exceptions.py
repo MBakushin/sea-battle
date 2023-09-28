@@ -2,7 +2,10 @@ class CoordsOutException(Exception):
     ...
 
 
-class OutOfContourException(Exception):
+class ContourException(Exception):
+    ...
+
+class GenBoardError(Exception):
     ...
 
 
