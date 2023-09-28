@@ -31,9 +31,6 @@ class Ship:
         self._direction = direction
         self._hp = length
 
-    # def __str__(self):
-    #     return f"{self.__class__}"
-
     @property
     def startCoords(self):
         return self._startCoords
@@ -58,7 +55,7 @@ class Ship:
 class Board:
     HOR_VIEW = {0: 'A', 1: 'B', 2: 'C', 3: 'D', 4: 'E', 5: 'F'}  # fill it
     VER_VIEW = {0: '1', 1: '2', 2: '3', 3: '4', 4: '5', 5: '6'}  # fill it
-    shipMark = u'\u25a0'  # Unicode code for black square
+    shipMark = u'\u25a0'  # Unicode for black square
     shootMark = 'X'
     missMark = 'O'
 
@@ -112,9 +109,6 @@ class Board:
 
     def __len__(self):
         return len(self._field)
-
-    def init_ship(self):
-        ...
 
     def add_ship(self, ship: Ship):
         """Method add ship class obj to Board"""

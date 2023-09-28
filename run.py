@@ -1,11 +1,11 @@
 from classes import *
 def main():
-    board = Board()
+    user = User()
+    user.gen_board()
     comp = Computer()
     comp.gen_board()
+    user.board.output_field()
     comp.board.output_field()
-    print(comp.countOfExit)
-    print(len(comp.board.shipList))
     
     
 if __name__ == "__main__":

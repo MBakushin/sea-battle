@@ -8,6 +8,9 @@ class ContourException(Exception):
 class GenBoardError(Exception):
     ...
 
+class IncorrectInputCoord(Exception):
+    ...
+
 
 class ShootTheSameCellException(Exception):
     ...
