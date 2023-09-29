@@ -1,6 +1,6 @@
+from random import randrange, choice
 from classes.inner_classes import *
 from classes.exceptions import *
-from random import randrange, choice
 
 
 def rerun_func(func):
@@ -21,18 +21,27 @@ def rerun_func(func):
 class Player:
     lenShip = {0: 3, 1: 2, 2: 2, 3: 1, 4: 1, 5: 1, 6: 1}
 
-    def __init__(self, count=0):
+    def __init__(self, count=0, takenCell=None):
         self.count = count
+        if takenCell is None:
+            self.takenCell = set()
 
     def gen_board(self):
+        ...
+
+    def ask(self):
+        ...
+
+    def move(self):
         ...
 
 
 class User(Player):
     hor_coord_dict = {v: k for k, v in Board.HOR_VIEW.items()}
     ver_coord_dict = {v: k for k, v in Board.VER_VIEW.items()}
-    def __init__(self, count=0, board=Board()):
-        super().__init__(count=0)
+    
+    def __init__(self, count=0, takenCell=None, board=Board()):
+        super().__init__(count=0, takenCell=None)
         self.board = board
 
     @property
@@ -100,10 +109,31 @@ class User(Player):
         self.board = Board()
         raise GenBoardError
 
+    def ask(self):
+        try:
+            self.enter_coords = input('Enter coords: ').split()
+            if len(self.enter_coords) != 2:
+                raise IncorrectInputCoord
+            elif self.enter_coords[0] not in self.hor_coord_dict:
+                raise IncorrectInputCoord
+            elif self.enter_coords[1] not in self.ver_coord_dict:
+                raise IncorrectInputCoord
+            self.choose_coords = (self.ver_coord_dict[self.enter_coords[1]],
+                                  self.hor_coord_dict[self.enter_coords[0]])
+        except IncorrectInputCoord:
+            print("Incorrect input ")
+            return False
+        if self.choose_coords in self.takenCell:
+            print("You choose taken cell. Pick another one")
+            return False
+        self.takenCell.add(self.choose_coords)
+        return self.choose_coords
+
 
 class Computer(Player):
-    def __init__(self, count=0, countOfExit=0, board=Board(hid=True)):
-        super().__init__(count=0)
+    def __init__(self, count=0, takenCell=None, countOfExit=0,
+                 board=Board(hid=True)):
+        super().__init__(count=0, takenCell=None)
         self.countOfExit = countOfExit
         self.board = board
 
@@ -147,3 +177,11 @@ class Computer(Player):
         self.countOfExit = 0
         self.board = Board(hid=True)
         raise GenBoardError
+
+    def ask(self):
+        self.choose_coords = (randrange(len(self.board)),
+                              randrange(len(self.board)))
+        if self.choose_coords in self.takenCell:
+            return False
+        self.takenCell.add(self.choose_coords)
+        return self.choose_coords

@@ -1,6 +1,7 @@
-from copy import copy
+from copy import deepcopy
 from numpy import pad
 from classes.exceptions import *
+
 
 class Dot:
     """Class for define dot in tuple:
@@ -29,7 +30,7 @@ class Ship:
         self.startCoords = startCoords
         self._lenght = length
         self._direction = direction
-        self._hp = length
+        self.hp = length
 
     def __repr__(self):
         return f"{self.__class__}: {self.dots()}"
@@ -42,17 +43,25 @@ class Ship:
     def startCoords(self, value):
         self._startCoords = value
 
+    @property
+    def hp(self):
+        return self._hp
+
+    @hp.setter
+    def hp(self, value):
+        self._hp = value
+
     def dots(self) -> list[tuple]:
         """Method return array with dot in tuple"""
-        dotsList = [self.startCoords]
+        self.dotsList = [self.startCoords]
         if self._lenght > 1:
             if self._direction == 'hor':
                 for i in range(1, self._lenght):
-                    dotsList.append((self.startCoords[0], self.startCoords[1] + i))
+                    self.dotsList.append((self.startCoords[0], self.startCoords[1] + i))
             elif self._direction == 'vert':
                 for i in range(1, self._lenght):
-                    dotsList.append((self.startCoords[0] + i, self.startCoords[1]))
-        return dotsList
+                    self.dotsList.append((self.startCoords[0] + i, self.startCoords[1]))
+        return self.dotsList
 
 
 class Board:
@@ -73,6 +82,8 @@ class Board:
             contourList = set()
         self.contourList = contourList
         self.shipAlive = shipAlive
+        #self.tmp_field = pad(self.field, 1, mode='constant')
+        #self.field_for_out = copy(self.field)
 
     @property
     def shipList(self):
@@ -132,19 +143,19 @@ class Board:
                         break
 
     def output_field(self):
-        self.tmp_field = copy(self.field)
+        self.field_for_out = deepcopy(self.field)
         if self.__hid:
-            for i in range(len(self.tmp_field)):
-                for j in range(len(self.tmp_field)):
-                    if self.tmp_field[i][j] == self.shipMark:
-                        self.tmp_field[i][j] = ' '
+            for i in range(len(self.field_for_out)):
+                for j in range(len(self.field_for_out)):
+                    if self.field_for_out[i][j] == self.shipMark:
+                        self.field_for_out[i][j] = ' '
 
         print('    ', end='')
         for value in self.HOR_VIEW.values():
             print(value, end=' | ')
         print()
         print('- - - - - - - - - - - - - - ')
-        for index, num in enumerate(self.tmp_field):
+        for index, num in enumerate(self.field_for_out):
             row = ' | '.join(num)
             print(f'{self.VER_VIEW[index]} | {row} |')
             print('- - - - - - - - - - - - - - ')

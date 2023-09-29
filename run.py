@@ -1,11 +1,10 @@
 from classes import *
 def main():
-    user = User()
-    comp = Computer()
-    comp.gen_board()
-    user.board.output_field()
-    comp.board.output_field()
-    game = Game(comp, user)
+    game = Game(Computer(), User())
+    game.user.gen_board()
+    game.comp.gen_board()
+    game.greet()
+    game.loop()
 
     
     
