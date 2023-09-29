@@ -4,6 +4,7 @@ from random import randrange, choice
 
 
 def rerun_func(func):
+    """Decorator to rerun func"""
     def wrapper(*args, **kwargs):
         count = 10
         while count:
@@ -46,9 +47,9 @@ class User(Player):
     def gen_board(self):
         while self.count < len(self.lenShip):
             self.board.output_field()
-            if self.count < len(self.lenShip)-1:
-                if len(self.board.contourList) == len(self.board)**2:
-                    break
+            if len(self.board.contourList) == (len(self.board)**2):
+                print("Can't add any ship, gen new board")
+                break
             try:
                 self.enter_coords = input('Enter coords: ').split()
                 if len(self.enter_coords) != 2:
@@ -90,8 +91,8 @@ class User(Player):
                 print("Coords out of field or coords are not available")
                 continue
             self.board.add_ship(self.ship)
-            print(self.ship.dots())
-            print(self.board.contourList)
+            print(self.board.shipList)  # remove it
+            print(len(self.board.contourList))  # remove it
             self.count += 1
         else:
             return True

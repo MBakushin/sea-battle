@@ -31,6 +31,9 @@ class Ship:
         self._direction = direction
         self._hp = length
 
+    def __repr__(self):
+        return f"{self.__class__}: {self.dots()}"
+
     @property
     def startCoords(self):
         return self._startCoords
