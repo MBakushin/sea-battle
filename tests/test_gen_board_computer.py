@@ -1,5 +1,5 @@
 from pytest import mark
-from classes import Ship, Board, Computer
+from classes import Computer
 
 
 @mark.parametrize('comp, shipList', [(Computer(), 7),(Computer(), 7),

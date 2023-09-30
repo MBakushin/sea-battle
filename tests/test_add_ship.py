@@ -1,4 +1,3 @@
-from pytest import mark
 from classes import Ship, Board
 
 
@@ -23,5 +22,3 @@ def test_add_ship2():
                                       (2, 1), (2, 2), (2, 3), (2, 4),
                                       (3, 1), (3, 2), (3, 3), (3, 4)}
     assert test_board2.shipAlive == 2
-
-

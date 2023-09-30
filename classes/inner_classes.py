@@ -1,25 +1,5 @@
 from copy import deepcopy
 from numpy import pad
-from classes.exceptions import *
-
-
-class Dot:
-    """Class for define dot in tuple:
-       x - horizontal coord,
-       y - vertical coord
-    """
-    def __init__(self, x, y):
-        self._x = x
-        self._y = y
-        self._coords = (self._x, self._y)
-
-    @property
-    def coords(self):
-        return self._coords
-
-    def __eq__(self, other):
-        tmp = other if isinstance(other, tuple) else other.coords
-        return self.coords == tmp
 
 
 class Ship:
@@ -82,8 +62,6 @@ class Board:
             contourList = set()
         self.contourList = contourList
         self.shipAlive = shipAlive
-        #self.tmp_field = pad(self.field, 1, mode='constant')
-        #self.field_for_out = copy(self.field)
 
     @property
     def shipList(self):
@@ -159,9 +137,3 @@ class Board:
             row = ' | '.join(num)
             print(f'{self.VER_VIEW[index]} | {row} |')
             print('- - - - - - - - - - - - - - ')
-
-    def out(self, dot):
-        ...
-
-    def shoot(self):
-        ...

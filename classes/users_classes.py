@@ -26,15 +26,6 @@ class Player:
         if takenCell is None:
             self.takenCell = set()
 
-    def gen_board(self):
-        ...
-
-    def ask(self):
-        ...
-
-    def move(self):
-        ...
-
 
 class User(Player):
     hor_coord_dict = {v: k for k, v in Board.HOR_VIEW.items()}
@@ -100,8 +91,6 @@ class User(Player):
                 print("Coords out of field or coords are not available")
                 continue
             self.board.add_ship(self.ship)
-            print(self.board.shipList)  # remove it
-            print(len(self.board.contourList))  # remove it
             self.count += 1
         else:
             return True
